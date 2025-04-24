@@ -780,7 +780,7 @@ const Calendar = () => {
   const calendarData = generateCalendar();
 
   return (
-    <div className="bg-[#ece8da] p-6 rounded-xl w-full h-fit max-w-sm">
+    <div className="bg-gradient-to-b from-blue-300  p-6 rounded-4xl w-full h-fit max-w-sm mt-4">
       {/* Today Banner */}
       {renderTodayBanner()}
 

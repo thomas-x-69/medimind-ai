@@ -7,6 +7,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        cascadia: ['"Cascadia Code"', "monospace"],
+        sans: ['"Cascadia Code"', "system-ui", "sans-serif"],
+      },
       colors: {
         // Exact colors from the design
         primary: {
@@ -42,9 +46,6 @@ module.exports = {
       },
       borderRadius: {
         card: "20px",
-      },
-      fontFamily: {
-        sans: ["Inter", "sans-serif"],
       },
       boxShadow: {
         card: "0 4px 20px rgba(0, 0, 0, 0.05)",

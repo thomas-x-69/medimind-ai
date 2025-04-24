@@ -13,12 +13,24 @@
   --accent-blue: #78aeff;
   --accent-purple: #9e77ed;
   --sidebar-color: #1a1f2b;
+  --font-family-base: "Cascadia Code", monospace;
+}
+* {
+  font-family: "Cascadia Code";
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-rgb));
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-family-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-family-base);
+  }
 }
 
 @keyframes fadeSlideIn {

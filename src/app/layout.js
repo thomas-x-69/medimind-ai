@@ -1,9 +1,6 @@
 // src/app/layout.js
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/store/providers";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Medimind.AI - Advanced Patient Management",
@@ -13,10 +10,19 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} bg-black`}
-        suppressHydrationWarning={true}
-      >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cascadia+Code:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="font-cascadia bg-black" suppressHydrationWarning={true}>
         <div className="app-container">
           <Providers>{children}</Providers>
         </div>

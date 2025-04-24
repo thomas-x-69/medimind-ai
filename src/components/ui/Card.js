@@ -4,7 +4,7 @@ const Card = ({
   children,
   title,
   background = "bg-white",
-  rounded = "rounded-3xl",
+  rounded = "rounded-4xl",
   shadow = "shadow-sm",
   className = "",
   padding = "p-5",
