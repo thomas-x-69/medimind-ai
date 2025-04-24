@@ -13,7 +13,7 @@ const Sidebar = ({
 
   return (
     <div
-      className={`${sidebarWidthClass} bg-black text-white flex flex-col transition-all duration-500 ${translateClass} z-30`}
+      className={`${sidebarWidthClass} rounded-2xl m-3 bg-black text-white flex flex-col transition-all duration-500 ${translateClass} z-30`}
     >
       {/* Toggle sidebar button */}
       <button
@@ -61,7 +61,7 @@ const Sidebar = ({
         <div
           className={`${
             sidebarCollapsed ? "ml-0" : "ml-2"
-          } bg-pink-500 rounded-full w-5 h-5 flex items-center justify-center text-xs animate-pulse`}
+          } bg-pink-700 rounded-full w-5 h-5 flex items-center justify-center text-xs`}
         >
           ai
         </div>

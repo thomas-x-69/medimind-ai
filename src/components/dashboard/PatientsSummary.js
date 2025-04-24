@@ -11,30 +11,51 @@ const PatientsSummary = ({
   isDragging,
   draggedItem,
   handleDragStart,
+  handleDragOver,
+  handleDragLeave,
   handleDrop,
   patientData,
   hoveredBarIndex,
   setHoveredBarIndex,
   openModal,
+  draggingEnabled,
 }) => {
   return (
     <div
       key={`card-${cardType}`}
       className={`${
         cardBgClasses[cardType]
-      } rounded-2xl p-5 relative overflow-hidden transition-all duration-500 transform ${scaleInClass} ${fadeInClass} delay-200 cursor-move hover:shadow-lg ${
-        hoveredCard === cardType ? "scale-[1.02]" : ""
-      } ${
-        isDragging && draggedItem === cardType ? "opacity-50" : "opacity-100"
-      }`}
+      } rounded-2xl p-5 relative overflow-hidden transition-all duration-500 transform ${scaleInClass} ${fadeInClass} delay-200 
+      ${draggingEnabled ? "draggable-component" : ""}
+      ${hoveredCard === cardType ? "scale-[1.02]" : ""} 
+      ${isDragging && draggedItem === cardType ? "dragging" : "opacity-100"}`}
       onMouseEnter={() => setHoveredCard(cardType)}
       onMouseLeave={() => setHoveredCard(null)}
-      draggable={true}
+      draggable={draggingEnabled}
       onDragStart={() => handleDragStart(cardType)}
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={() => handleDrop(cardType)}
+      onDragOver={(e) => {
+        e.preventDefault();
+        if (draggingEnabled && draggedItem && draggedItem !== cardType) {
+          e.currentTarget.classList.add("drag-over");
+        }
+      }}
+      onDragLeave={(e) => {
+        e.currentTarget.classList.remove("drag-over");
+      }}
+      onDrop={(e) => {
+        e.currentTarget.classList.remove("drag-over");
+        handleDrop(cardType);
+      }}
     >
-      <div className="flex justify-between items-start mb-4">
+      {draggingEnabled && (
+        <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-5 z-10 flex items-center justify-center pointer-events-none">
+          <div className="bg-white bg-opacity-80 px-3 py-1 rounded-lg text-sm font-medium">
+            Drag to reposition
+          </div>
+        </div>
+      )}
+
+      <div className="flex justify-between items-start mb-4 relative z-20">
         <h2 className="text-xl font-bold">Patients:</h2>
         <div className="flex space-x-2">
           <button
@@ -49,7 +70,7 @@ const PatientsSummary = ({
         </div>
       </div>
 
-      <div className="flex space-x-12">
+      <div className="flex space-x-12 relative z-20">
         {patientData.map((item, idx) => (
           <div key={item.age} className="transition-all duration-300">
             <div className="font-bold text-lg">{item.count} pers</div>

@@ -626,7 +626,7 @@ const Calendar = () => {
     );
 
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30 overflow-hidden">
         <div
           ref={dayViewRef}
           className="bg-white rounded-lg p-4 w-full max-w-md shadow-xl max-h-[90vh] overflow-auto"
@@ -907,11 +907,6 @@ const Calendar = () => {
                 )}
               </div>
             ))}
-
-            {/* Week Number */}
-            <div className="absolute -right-12 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs">
-              W{week.weekNumber}
-            </div>
           </div>
         ))}
       </div>

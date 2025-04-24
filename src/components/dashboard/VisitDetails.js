@@ -2,8 +2,6 @@ import React from "react";
 
 const VisitDetails = ({
   selectedPatient,
-  isEditing,
-  toggleEdit,
   patientCardRef,
   patientNotes,
   setPatientNotes,
@@ -146,7 +144,7 @@ const VisitDetails = ({
         <div className="mb-4">
           <div className="text-sm text-gray-500">
             Last Checked:{" "}
-            <span className="text-black">Dr. Everly on 21 April 2021</span>
+            <span className="text-black">Dr. Thomas on 21 April 2021</span>
           </div>
           <div className="text-sm text-gray-500">
             Prescription:{" "}
@@ -157,25 +155,10 @@ const VisitDetails = ({
         </div>
 
         <div className="mb-4">
-          <div className="text-sm font-bold mb-1 flex justify-between items-center">
+          <div className="text-sm font-bold mb-1">
             <span>Observation</span>
-            <button
-              onClick={toggleEdit}
-              className="text-xs text-gray-500 hover:text-gray-700 transition-colors duration-300"
-            >
-              {isEditing ? "Save" : "Edit"}
-            </button>
           </div>
-          <div
-            className={`text-sm ${
-              isEditing ? "bg-white p-2 rounded border border-gray-300" : ""
-            }`}
-            contentEditable={isEditing}
-            suppressContentEditableWarning={true}
-            onBlur={(e) => setPatientNotes(e.target.textContent)}
-          >
-            {patientNotes}
-          </div>
+          <div className="text-sm">{patientNotes}</div>
         </div>
 
         <div>

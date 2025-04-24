@@ -14,7 +14,7 @@ import Modal from "../ui/Modal";
 const MedicalDashboard = () => {
   // Advanced state management
   const [isLoaded, setIsLoaded] = useState(false);
-  const [selectedPatient, setSelectedPatient] = useState("Taigo Wilkinson");
+  const [selectedPatient, setSelectedPatient] = useState("Thomas");
   const [activeNavItem, setActiveNavItem] = useState("Dashboard");
   const [showNotification, setShowNotification] = useState(false);
   const [currentMonth, setCurrentMonth] = useState("May 2024");
@@ -30,7 +30,7 @@ const MedicalDashboard = () => {
     new Date().toLocaleTimeString()
   );
   const [activeTags, setActiveTags] = useState(["Patients"]);
-  const [isEditing, setIsEditing] = useState(false);
+  const [draggingEnabled, setDraggingEnabled] = useState(false);
   const [patientNotes, setPatientNotes] = useState(
     "High fever and cough at normal hemoglobin levels."
   );
@@ -38,10 +38,10 @@ const MedicalDashboard = () => {
   const [pendingAlert, setPendingAlert] = useState(false);
   const [isExpanded, setIsExpanded] = useState({});
   const [patientStatus, setPatientStatus] = useState({
-    "Taigo Wilkinson": "critical",
-    "Samantha Williams": "stable",
-    "Amy White": "fair",
-    "Tyler Young": "stable",
+    Thomas: "critical",
+    "Thomas Williams": "stable",
+    "Thomas White": "fair",
+    "Thomas Young": "stable",
   });
   const [patientVitals, setPatientVitals] = useState({
     heartRate: 88,
@@ -62,7 +62,6 @@ const MedicalDashboard = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const searchInputRef = useRef(null);
   const patientCardRef = useRef(null);
@@ -72,7 +71,7 @@ const MedicalDashboard = () => {
   const patients = [
     {
       id: 1,
-      name: "Taigo Wilkinson",
+      name: "Thomas",
       type: "Emergency Visit",
       time: "09 : 15 AM",
       color: "pink",
@@ -81,7 +80,7 @@ const MedicalDashboard = () => {
     },
     {
       id: 2,
-      name: "Samantha Williams",
+      name: "Thomas Williams",
       type: "Routine Check-Up",
       time: "09 : 15 AM",
       color: "blue",
@@ -90,7 +89,7 @@ const MedicalDashboard = () => {
     },
     {
       id: 3,
-      name: "Amy White",
+      name: "Thomas White",
       type: "Video Consultation",
       time: "09 : 15 AM",
       color: "pink",
@@ -99,7 +98,7 @@ const MedicalDashboard = () => {
     },
     {
       id: 4,
-      name: "Tyler Young",
+      name: "Thomas Young",
       type: "Report",
       time: "09 : 45 AM",
       color: "green",
@@ -218,7 +217,7 @@ const MedicalDashboard = () => {
       // When timer resets, show a notification
       if (nextPatientTimer === 1) {
         setShowToast(true);
-        setToastMessage("Next patient: Samantha Williams arriving");
+        setToastMessage("Next patient: Thomas Williams arriving");
         setTimeout(() => setShowToast(false), 3000);
       }
     }, 1000);
@@ -286,13 +285,7 @@ const MedicalDashboard = () => {
       if (e.key === "Escape") {
         setShowModal(false);
         setIsSearching(false);
-        setIsEditing(false);
-      }
-
-      // Ctrl+D to toggle dark mode
-      if (e.ctrlKey && e.key === "d") {
-        e.preventDefault();
-        setIsDarkMode((prev) => !prev);
+        setDraggingEnabled(false);
       }
     };
 
@@ -329,13 +322,37 @@ const MedicalDashboard = () => {
 
   // Handle drag start
   const handleDragStart = (item) => {
+    if (!draggingEnabled) return;
+
     setIsDragging(true);
     setDraggedItem(item);
+
+    // Show toast notification for drag start
+    setShowToast(true);
+    setToastMessage(`Dragging ${item} component...`);
+    setTimeout(() => setShowToast(false), 1000);
+  };
+
+  // Handle drag over
+  const handleDragOver = (e, targetPosition) => {
+    e.preventDefault();
+    if (!draggingEnabled || !isDragging) return;
+
+    // Add visual highlighting for drop target
+    e.currentTarget.classList.add("ring-2", "ring-pink-500", "scale-105");
+  };
+
+  // Handle drag leave
+  const handleDragLeave = (e) => {
+    if (!draggingEnabled) return;
+
+    // Remove visual highlighting
+    e.currentTarget.classList.remove("ring-2", "ring-pink-500", "scale-105");
   };
 
   // Handle drop
   const handleDrop = (targetPosition) => {
-    if (!draggedItem) return;
+    if (!draggingEnabled || !draggedItem) return;
 
     const newLayout = [...dashboardLayout];
     const draggedIndex = newLayout.indexOf(draggedItem);
@@ -357,15 +374,16 @@ const MedicalDashboard = () => {
     setDraggedItem(null);
   };
 
-  // Handle edit toggle
-  const toggleEdit = () => {
-    setIsEditing(!isEditing);
-    if (!isEditing) {
-      // Show toast when entering edit mode
-      setShowToast(true);
-      setToastMessage("Editing mode activated");
-      setTimeout(() => setShowToast(false), 2000);
-    }
+  // Toggle drag and drop mode
+  const toggleDragMode = () => {
+    setDraggingEnabled(!draggingEnabled);
+
+    // Show toast notification for mode change
+    setShowToast(true);
+    setToastMessage(
+      draggingEnabled ? "Drag & Drop mode disabled" : "Drag & Drop mode enabled"
+    );
+    setTimeout(() => setShowToast(false), 2000);
   };
 
   // Open modal
@@ -375,18 +393,16 @@ const MedicalDashboard = () => {
   };
 
   // Animation classes
-  const baseClasses = isDarkMode
-    ? "bg-gray-900 text-gray-100"
-    : "bg-amber-50 text-gray-800";
+  const baseClasses = "bg-amber-50 text-gray-800";
   const fadeInClass = isLoaded
     ? "opacity-100 translate-y-0"
     : "opacity-0 translate-y-4";
   const scaleInClass = isLoaded ? "scale-100" : "scale-95";
   const cardBgClasses = {
-    patients: isDarkMode ? "bg-amber-900/30" : "bg-amber-200",
-    visits: isDarkMode ? "bg-pink-900/30" : "bg-pink-100",
-    condition: isDarkMode ? "bg-green-900/30" : "bg-green-100",
-    sessions: isDarkMode ? "bg-blue-900/30" : "bg-blue-100",
+    patients: "bg-amber-200",
+    visits: "bg-pink-100",
+    condition: "bg-green-100",
+    sessions: "bg-blue-100",
   };
 
   return (
@@ -409,8 +425,6 @@ const MedicalDashboard = () => {
         <TopBar
           isLoaded={isLoaded}
           fadeInClass={fadeInClass}
-          isDarkMode={isDarkMode}
-          setIsDarkMode={setIsDarkMode}
           searchValue={searchValue}
           setSearchValue={setSearchValue}
           isSearching={isSearching}
@@ -433,26 +447,16 @@ const MedicalDashboard = () => {
               className={`pb-4 transition-all duration-700 ${fadeInClass} delay-100`}
             >
               <div className="flex justify-between items-center">
-                <h1
-                  className={`text-4xl font-bold ${
-                    isEditing
-                      ? "border-b-2 border-dashed border-gray-400 pb-1"
-                      : ""
-                  }`}
-                  contentEditable={isEditing}
-                  suppressContentEditableWarning={true}
-                >
-                  Good morning, Dr.Olivia
-                </h1>
+                <h1 className="text-4xl font-bold">Good morning, Dr.Thomas</h1>
                 <button
-                  onClick={toggleEdit}
+                  onClick={toggleDragMode}
                   className={`flex items-center space-x-1 text-sm px-3 py-1 rounded transition-colors duration-300 ${
-                    isEditing
+                    draggingEnabled
                       ? "bg-green-500 text-white"
                       : "bg-gray-200 text-gray-700"
                   }`}
                 >
-                  {isEditing ? (
+                  {draggingEnabled ? (
                     <>
                       <svg
                         width="14"
@@ -464,7 +468,7 @@ const MedicalDashboard = () => {
                       >
                         <polyline points="20 6 9 17 4 12"></polyline>
                       </svg>
-                      <span>Save</span>
+                      <span>Done</span>
                     </>
                   ) : (
                     <>
@@ -476,22 +480,14 @@ const MedicalDashboard = () => {
                         stroke="currentColor"
                         strokeWidth="2"
                       >
-                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                        <path d="M3 15v4c0 1.1.9 2 2 2h4M16 3h4a2 2 0 0 1 2 2v4M21 14v4a2 2 0 0 1-2 2h-4M8 3H4a2 2 0 0 0-2 2v4"></path>
                       </svg>
-                      <span>Edit</span>
+                      <span>Reposition</span>
                     </>
                   )}
                 </button>
               </div>
-              <p
-                className={`text-gray-500 mt-1 text-sm ${
-                  isEditing
-                    ? "border-b-2 border-dashed border-gray-400 pb-1"
-                    : ""
-                }`}
-                contentEditable={isEditing}
-                suppressContentEditableWarning={true}
-              >
+              <p className="text-gray-500 mt-1 text-sm">
                 Intelly wishes you a good and productive day. 45 patients
                 waiting for your treatment today. You also have one live event
                 in your calendar today.
@@ -528,11 +524,14 @@ const MedicalDashboard = () => {
                       isDragging={isDragging}
                       draggedItem={draggedItem}
                       handleDragStart={handleDragStart}
+                      handleDragOver={handleDragOver}
+                      handleDragLeave={handleDragLeave}
                       handleDrop={handleDrop}
                       patientData={patientData}
                       hoveredBarIndex={hoveredBarIndex}
                       setHoveredBarIndex={setHoveredBarIndex}
                       openModal={openModal}
+                      draggingEnabled={draggingEnabled}
                     />
                   );
                 }
@@ -551,6 +550,8 @@ const MedicalDashboard = () => {
                       isDragging={isDragging}
                       draggedItem={draggedItem}
                       handleDragStart={handleDragStart}
+                      handleDragOver={handleDragOver}
+                      handleDragLeave={handleDragLeave}
                       handleDrop={handleDrop}
                       visitData={visitData}
                       chartData={chartData}
@@ -559,6 +560,7 @@ const MedicalDashboard = () => {
                       setHoveredDataPoint={setHoveredDataPoint}
                       chartRef={chartRef}
                       timeSlots={timeSlots}
+                      draggingEnabled={draggingEnabled}
                     />
                   );
                 }
@@ -577,10 +579,13 @@ const MedicalDashboard = () => {
                       isDragging={isDragging}
                       draggedItem={draggedItem}
                       handleDragStart={handleDragStart}
+                      handleDragOver={handleDragOver}
+                      handleDragLeave={handleDragLeave}
                       handleDrop={handleDrop}
                       openModal={openModal}
                       setShowToast={setShowToast}
                       setToastMessage={setToastMessage}
+                      draggingEnabled={draggingEnabled}
                     />
                   );
                 }
@@ -599,9 +604,12 @@ const MedicalDashboard = () => {
                       isDragging={isDragging}
                       draggedItem={draggedItem}
                       handleDragStart={handleDragStart}
+                      handleDragOver={handleDragOver}
+                      handleDragLeave={handleDragLeave}
                       handleDrop={handleDrop}
                       setModalType={setModalType}
                       setShowModal={setShowModal}
+                      draggingEnabled={draggingEnabled}
                     />
                   );
                 }
@@ -629,8 +637,6 @@ const MedicalDashboard = () => {
               {/* Visit Details */}
               <VisitDetails
                 selectedPatient={selectedPatient}
-                isEditing={isEditing}
-                toggleEdit={toggleEdit}
                 patientCardRef={patientCardRef}
                 patientNotes={patientNotes}
                 setPatientNotes={setPatientNotes}
@@ -645,7 +651,6 @@ const MedicalDashboard = () => {
           {/* Calendar Sidebar */}
           <Calendar
             isLoaded={isLoaded}
-            isDarkMode={isDarkMode}
             currentMonth={currentMonth}
             days={days}
             events={events}
@@ -698,6 +703,22 @@ const MedicalDashboard = () => {
             transform: scale(1);
             opacity: 1;
           }
+        }
+
+        .draggable-component {
+          cursor: move;
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .draggable-component.dragging {
+          transform: scale(1.02);
+          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+          opacity: 0.7;
+        }
+
+        .drag-over {
+          border: 2px dashed #5669ff;
+          transform: scale(1.05);
         }
       `}</style>
     </div>
