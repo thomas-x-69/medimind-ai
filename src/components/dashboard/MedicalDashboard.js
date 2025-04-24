@@ -4,7 +4,6 @@ import Sidebar from "../layout/Sidebar";
 import PatientsSummary from "./PatientsSummary";
 import VisitsSummary from "./VisitsSummary";
 import ConditionsSummary from "./ConditionsSummary";
-import SessionsSummary from "./SessionsSummary";
 import PatientsList from "./PatientsList";
 import VisitDetails from "./VisitDetails";
 import Calendar from "./Calendar";
@@ -15,7 +14,7 @@ const MedicalDashboard = () => {
   // Advanced state management
   const [isLoaded, setIsLoaded] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState("Thomas");
-  const [activeNavItem, setActiveNavItem] = useState("Dashboard");
+  const [activeNavItem, setActiveNavItem] = useState("Overview");
   const [showNotification, setShowNotification] = useState(false);
   const [currentMonth, setCurrentMonth] = useState("May 2024");
   const [hoveredBarIndex, setHoveredBarIndex] = useState(null);
@@ -405,43 +404,119 @@ const MedicalDashboard = () => {
     sessions: "bg-blue-100",
   };
 
-  return (
-    <div
-      className={`flex h-screen w-full font-sans overflow-hidden ${baseClasses} transition-colors duration-500`}
-    >
-      {/* Left Sidebar */}
-      <Sidebar
-        isLoaded={isLoaded}
-        sidebarCollapsed={sidebarCollapsed}
-        setSidebarCollapsed={setSidebarCollapsed}
-        activeNavItem={activeNavItem}
-        setActiveNavItem={setActiveNavItem}
-        openModal={openModal}
-      />
+  // Render content based on active nav item
+  const renderContent = () => {
+    switch (activeNavItem) {
+      case "Patients":
+        return (
+          <div className="p-6">
+            <h1 className="text-3xl font-bold mb-6">Patients</h1>
+            <div className="grid grid-cols-1 gap-6">
+              <PatientsList
+                patients={patients}
+                isLoaded={isLoaded}
+                selectedPatient={selectedPatient}
+                handlePatientClick={handlePatientClick}
+                patientStatus={patientStatus}
+                isExpanded={isExpanded}
+                setIsExpanded={setIsExpanded}
+                openModal={openModal}
+              />
+              <VisitDetails
+                selectedPatient={selectedPatient}
+                patientCardRef={patientCardRef}
+                patientNotes={patientNotes}
+                setPatientNotes={setPatientNotes}
+                patientVitals={patientVitals}
+                isAnimatingVitals={isAnimatingVitals}
+                medications={medications}
+                openModal={openModal}
+              />
+            </div>
+          </div>
+        );
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Search Bar with Clock */}
-        <TopBar
-          isLoaded={isLoaded}
-          fadeInClass={fadeInClass}
-          searchValue={searchValue}
-          setSearchValue={setSearchValue}
-          isSearching={isSearching}
-          setIsSearching={setIsSearching}
-          searchInputRef={searchInputRef}
-          activeTags={activeTags}
-          toggleTag={toggleTag}
-          liveTimeUpdate={liveTimeUpdate}
-          pendingAlert={pendingAlert}
-          nextPatientTimer={nextPatientTimer}
-          showNotification={showNotification}
-          openModal={openModal}
-        />
+      case "Learning":
+        return (
+          <div className="p-6">
+            <h1 className="text-3xl font-bold mb-6">Learning Resources</h1>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="bg-white p-5 rounded-2xl shadow">
+                <h2 className="text-xl font-bold mb-4">Latest Articles</h2>
+                <div className="space-y-4">
+                  {[
+                    {
+                      title: "New Developments in Cardiology",
+                      date: "April 22, 2025",
+                      read: "5 min read",
+                    },
+                    {
+                      title: "AI Applications in Preventive Care",
+                      date: "April 18, 2025",
+                      read: "10 min read",
+                    },
+                    {
+                      title: "Patient Communication Techniques",
+                      date: "April 15, 2025",
+                      read: "7 min read",
+                    },
+                  ].map((article) => (
+                    <div
+                      key={article.title}
+                      className="p-3 bg-blue-50 rounded-xl hover:bg-blue-100 transition cursor-pointer"
+                    >
+                      <h3 className="font-medium">{article.title}</h3>
+                      <div className="flex justify-between text-sm text-gray-500 mt-1">
+                        <span>{article.date}</span>
+                        <span>{article.read}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button className="mt-4 text-sm text-blue-600 hover:underline">
+                  View all articles →
+                </button>
+              </div>
 
-        {/* Main Dashboard Content */}
-        <div className="flex-1 flex overflow-auto">
-          <div className="flex-1 p-6">
+              <div className="bg-white p-5 rounded-2xl shadow">
+                <h2 className="text-xl font-bold mb-4">Upcoming Webinars</h2>
+                <div className="space-y-4">
+                  {[
+                    {
+                      title: "Advanced Diagnostic Techniques",
+                      date: "April 30, 2025",
+                      time: "2:00 PM EST",
+                    },
+                    {
+                      title: "Medical Ethics in Digital Age",
+                      date: "May 5, 2025",
+                      time: "11:00 AM EST",
+                    },
+                  ].map((webinar) => (
+                    <div
+                      key={webinar.title}
+                      className="p-3 bg-pink-50 rounded-xl hover:bg-pink-100 transition cursor-pointer"
+                    >
+                      <h3 className="font-medium">{webinar.title}</h3>
+                      <div className="flex justify-between text-sm text-gray-500 mt-1">
+                        <span>{webinar.date}</span>
+                        <span>{webinar.time}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button className="mt-4 text-sm text-pink-600 hover:underline">
+                  Register for webinars →
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+
+      case "Overview":
+      default:
+        return (
+          <div className="p-6">
             {/* Header */}
             <div
               className={`pb-4 transition-all duration-700 ${fadeInClass} delay-100`}
@@ -590,30 +665,6 @@ const MedicalDashboard = () => {
                   );
                 }
 
-                if (cardType === "sessions") {
-                  return (
-                    <SessionsSummary
-                      key={cardType}
-                      cardType={cardType}
-                      isLoaded={isLoaded}
-                      cardBgClasses={cardBgClasses}
-                      scaleInClass={scaleInClass}
-                      fadeInClass={fadeInClass}
-                      hoveredCard={hoveredCard}
-                      setHoveredCard={setHoveredCard}
-                      isDragging={isDragging}
-                      draggedItem={draggedItem}
-                      handleDragStart={handleDragStart}
-                      handleDragOver={handleDragOver}
-                      handleDragLeave={handleDragLeave}
-                      handleDrop={handleDrop}
-                      setModalType={setModalType}
-                      setShowModal={setShowModal}
-                      draggingEnabled={draggingEnabled}
-                    />
-                  );
-                }
-
                 return null;
               })}
             </div>
@@ -647,19 +698,61 @@ const MedicalDashboard = () => {
               />
             </div>
           </div>
+        );
+    }
+  };
 
-          {/* Calendar Sidebar */}
-          <Calendar
-            isLoaded={isLoaded}
-            currentMonth={currentMonth}
-            days={days}
-            events={events}
-            timelineView={timelineView}
-            setTimelineView={setTimelineView}
-            setShowToast={setShowToast}
-            setToastMessage={setToastMessage}
-            openModal={openModal}
-          />
+  return (
+    <div
+      className={`flex h-screen w-full font-sans overflow-hidden ${baseClasses} transition-colors duration-500`}
+    >
+      {/* Left Sidebar */}
+      <Sidebar
+        isLoaded={isLoaded}
+        sidebarCollapsed={sidebarCollapsed}
+        setSidebarCollapsed={setSidebarCollapsed}
+        activeNavItem={activeNavItem}
+        setActiveNavItem={setActiveNavItem}
+      />
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Top Search Bar with Clock */}
+        <TopBar
+          isLoaded={isLoaded}
+          fadeInClass={fadeInClass}
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          isSearching={isSearching}
+          setIsSearching={setIsSearching}
+          searchInputRef={searchInputRef}
+          activeTags={activeTags}
+          toggleTag={toggleTag}
+          liveTimeUpdate={liveTimeUpdate}
+          pendingAlert={pendingAlert}
+          nextPatientTimer={nextPatientTimer}
+          showNotification={showNotification}
+          openModal={openModal}
+        />
+
+        {/* Main Dashboard Content */}
+        <div className="flex-1 flex overflow-auto">
+          <div className="flex-1">{renderContent()}</div>
+
+          {/* Calendar Sidebar - only show on Overview */}
+          {activeNavItem === "Overview" && (
+            <Calendar
+              isLoaded={isLoaded}
+              currentMonth={currentMonth}
+              days={days}
+              events={events}
+              timelineView={timelineView}
+              setTimelineView={setTimelineView}
+              setShowToast={setShowToast}
+              setToastMessage={setToastMessage}
+              openModal={openModal}
+            />
+          )}
         </div>
       </div>
 
