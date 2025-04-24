@@ -3,9 +3,6 @@ import React from "react";
 const PatientsSummary = ({
   cardType,
   isLoaded,
-  cardBgClasses,
-  scaleInClass,
-  fadeInClass,
   hoveredCard,
   setHoveredCard,
   isDragging,
@@ -23,9 +20,9 @@ const PatientsSummary = ({
   return (
     <div
       key={`card-${cardType}`}
-      className={`${
-        cardBgClasses[cardType]
-      } rounded-2xl p-5 relative overflow-hidden transition-all duration-500 transform ${scaleInClass} ${fadeInClass} delay-200 
+      className={`bg-amber-100 rounded-3xl p-5 relative overflow-hidden transition-all duration-500 transform 
+      ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"} 
+      ${isLoaded ? "scale-100" : "scale-95"}
       ${draggingEnabled ? "draggable-component" : ""}
       ${hoveredCard === cardType ? "scale-[1.02]" : ""} 
       ${isDragging && draggedItem === cardType ? "dragging" : "opacity-100"}`}
@@ -114,14 +111,6 @@ const PatientsSummary = ({
             )}
           </div>
         ))}
-      </div>
-
-      {/* Interactive visual elements */}
-      <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-amber-300 rounded-full opacity-30 transition-all duration-700 transform group-hover:scale-110 group-hover:rotate-45"></div>
-      <div className="absolute top-4 right-4">
-        <div className="text-xs bg-white bg-opacity-70 rounded-full px-2 py-0.5 animate-pulse">
-          Live
-        </div>
       </div>
     </div>
   );

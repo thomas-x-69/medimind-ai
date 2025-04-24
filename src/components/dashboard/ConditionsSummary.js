@@ -29,9 +29,7 @@ const ConditionsSummary = ({
   return (
     <div
       key={`card-${cardType}`}
-      className={`${
-        cardBgClasses[cardType]
-      } rounded-2xl p-5 relative overflow-hidden transition-all duration-500 transform ${scaleInClass} ${fadeInClass} delay-400 
+      className={`bg-green-100 rounded-3xl p-5 relative overflow-hidden transition-all duration-500 transform ${scaleInClass} ${fadeInClass} delay-400 
       ${draggingEnabled ? "draggable-component" : ""}
       ${hoveredCard === cardType ? "scale-[1.02]" : ""} 
       ${isDragging && draggedItem === cardType ? "dragging" : "opacity-100"}`}
@@ -123,7 +121,7 @@ const ConditionsSummary = ({
             ></div>
 
             {/* Hover details */}
-            <div className="absolute top-full left-0 mt-2 bg-white rounded shadow-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs z-10 w-32">
+            <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs z-10 w-32">
               <div className="font-bold">{item.label}</div>
               <div className="mt-1">
                 <div className="flex justify-between">
