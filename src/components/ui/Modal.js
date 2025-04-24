@@ -1,10 +1,9 @@
 import React from "react";
-import { X } from "lucide-react";
 
-const Modal = ({ type, onClose, children }) => {
+const Modal = ({ modalType, onClose }) => {
   // Get modal title based on type
   const getModalTitle = () => {
-    switch (type) {
+    switch (modalType) {
       case "profile":
         return "Doctor Profile";
       case "notifications":
@@ -53,107 +52,115 @@ const Modal = ({ type, onClose, children }) => {
             className="text-gray-500 hover:text-gray-700 transition-colors duration-300"
             onClick={onClose}
           >
-            <X size={20} />
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
           </button>
         </div>
 
         <div className="mb-4">
-          {children || (
+          {modalType === "add-patient" && (
+            <div className="space-y-4">
+              <div className="text-left">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Patient Name
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Full name"
+                />
+              </div>
+              <div className="text-left">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Visit Type
+                </label>
+                <select className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <option>Emergency Visit</option>
+                  <option>Routine Check-Up</option>
+                  <option>Video Consultation</option>
+                  <option>Report</option>
+                </select>
+              </div>
+              <div className="text-left">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Appointment Time
+                </label>
+                <input
+                  type="time"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+          )}
+
+          {modalType === "add-event" && (
+            <div className="space-y-4">
+              <div className="text-left">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Event Title
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Title"
+                />
+              </div>
+              <div className="text-left">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Event Type
+                </label>
+                <select className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <option>Emergency visit</option>
+                  <option>Diagnostic test</option>
+                  <option>Team daily planning</option>
+                  <option>Patient consultation</option>
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-left">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Start Time
+                  </label>
+                  <input
+                    type="time"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div className="text-left">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    End Time
+                  </label>
+                  <input
+                    type="time"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+              </div>
+              <div className="text-left">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Location"
+                />
+              </div>
+            </div>
+          )}
+
+          {modalType !== "add-patient" && modalType !== "add-event" && (
             <div className="text-center py-8 text-gray-500">
-              {type === "add-patient" && (
-                <div className="space-y-4">
-                  <div className="text-left">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Patient Name
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Full name"
-                    />
-                  </div>
-                  <div className="text-left">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Visit Type
-                    </label>
-                    <select className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                      <option>Emergency Visit</option>
-                      <option>Routine Check-Up</option>
-                      <option>Video Consultation</option>
-                      <option>Report</option>
-                    </select>
-                  </div>
-                  <div className="text-left">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Appointment Time
-                    </label>
-                    <input
-                      type="time"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {type === "add-event" && (
-                <div className="space-y-4">
-                  <div className="text-left">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Event Title
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Title"
-                    />
-                  </div>
-                  <div className="text-left">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Event Type
-                    </label>
-                    <select className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                      <option>Emergency visit</option>
-                      <option>Diagnostic test</option>
-                      <option>Team daily planning</option>
-                      <option>Patient consultation</option>
-                    </select>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="text-left">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Start Time
-                      </label>
-                      <input
-                        type="time"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                    <div className="text-left">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        End Time
-                      </label>
-                      <input
-                        type="time"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                  </div>
-                  <div className="text-left">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Location
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Location"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {type !== "add-patient" &&
-                type !== "add-event" &&
-                "Modal content for " + getModalTitle() + " would appear here"}
+              Modal content would appear here
             </div>
           )}
         </div>

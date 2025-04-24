@@ -1,67 +1,107 @@
-import React, { useRef, useEffect } from "react";
-import { Chart, registerables } from "chart.js";
+import React from "react";
 
-Chart.register(...registerables);
+const PatientsSummary = ({
+  cardType,
+  isLoaded,
+  cardBgClasses,
+  scaleInClass,
+  fadeInClass,
+  hoveredCard,
+  setHoveredCard,
+  isDragging,
+  draggedItem,
+  handleDragStart,
+  handleDrop,
+  patientData,
+  hoveredBarIndex,
+  setHoveredBarIndex,
+  openModal,
+}) => {
+  return (
+    <div
+      key={`card-${cardType}`}
+      className={`${
+        cardBgClasses[cardType]
+      } rounded-2xl p-5 relative overflow-hidden transition-all duration-500 transform ${scaleInClass} ${fadeInClass} delay-200 cursor-move hover:shadow-lg ${
+        hoveredCard === cardType ? "scale-[1.02]" : ""
+      } ${
+        isDragging && draggedItem === cardType ? "opacity-50" : "opacity-100"
+      }`}
+      onMouseEnter={() => setHoveredCard(cardType)}
+      onMouseLeave={() => setHoveredCard(null)}
+      draggable={true}
+      onDragStart={() => handleDragStart(cardType)}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={() => handleDrop(cardType)}
+    >
+      <div className="flex justify-between items-start mb-4">
+        <h2 className="text-xl font-bold">Patients:</h2>
+        <div className="flex space-x-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              openModal("patients");
+            }}
+            className="text-xs bg-black text-white px-2 py-0.5 rounded-full hover:bg-gray-700 transition-colors duration-300"
+          >
+            View all
+          </button>
+        </div>
+      </div>
 
-const PatientsSummary = ({ isLoaded = false }) => {
-  const chartRef = useRef(null);
-  const chartInstance = useRef(null);
-
-  // Patient data
-  const patientData = [
-    { age: "22-32 Y/O", count: 14 },
-    { age: "32-45 Y/O", count: 5 },
-    { age: "45+ Y/O", count: 2 },
-  ];
-
-  // Custom bar rendering
-  const renderBars = () => {
-    if (!isLoaded) return null;
-
-    return (
-      <div className="mt-8 mb-4 flex justify-around relative">
-        {patientData.map((data, idx) => (
-          <div key={idx} className="flex flex-col items-center">
-            <div className="h-28 flex items-end justify-center">
+      <div className="flex space-x-12">
+        {patientData.map((item, idx) => (
+          <div key={item.age} className="transition-all duration-300">
+            <div className="font-bold text-lg">{item.count} pers</div>
+            <div className="text-xs text-gray-500">{item.age}</div>
+            <div className="mt-4 flex items-end justify-center h-28 relative">
               <div
-                className="w-10 bg-black rounded-t-md transition-all duration-700"
-                style={{
-                  height: isLoaded
-                    ? idx === 0
-                      ? "80px"
-                      : idx === 1
-                      ? "40px"
-                      : "90px"
-                    : "0px",
-                }}
+                className="relative group"
+                onMouseEnter={() => setHoveredBarIndex(idx)}
+                onMouseLeave={() => setHoveredBarIndex(null)}
               >
-                <div className="absolute inset-0 bg-white bg-opacity-20 rounded-t-md"></div>
+                <div
+                  className="transition-all duration-700 w-10 bg-black rounded-t-md relative"
+                  style={{
+                    height: isLoaded
+                      ? idx === 0
+                        ? "80px"
+                        : idx === 1
+                        ? "40px"
+                        : "96px"
+                      : "0px",
+                    transition: "height 1s ease-out, transform 0.3s ease-out",
+                    transform:
+                      hoveredBarIndex === idx
+                        ? "translateY(-4px)"
+                        : "translateY(0)",
+                  }}
+                >
+                  <div className="absolute inset-0 bg-white bg-opacity-20 rounded-t-md"></div>
+                </div>
+                <div className="absolute -left-6 top-1/2 w-20 border-t border-dashed border-gray-400"></div>
+
+                {hoveredBarIndex === idx && (
+                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-black text-white px-2 py-1 rounded text-xs whitespace-nowrap z-10">
+                    {item.count} patients
+                  </div>
+                )}
               </div>
             </div>
-            <div className="text-xs text-gray-500 mt-1 text-center">
-              {idx === 0 && "07:30 p.m"}
-              {idx === 2 && "12:00 p.m"}
-            </div>
-          </div>
-        ))}
-        <div className="absolute top-1/3 left-0 right-0 border-t border-dashed border-gray-400"></div>
-      </div>
-    );
-  };
-
-  return (
-    <div className="p-5">
-      <h3 className="text-lg font-semibold mb-4">Patients:</h3>
-      <div className="flex justify-between mb-5">
-        {patientData.map((item, idx) => (
-          <div key={item.age} className="flex flex-col items-center">
-            <span className="text-xl font-bold">{item.count} pers</span>
-            <span className="text-xs text-gray-500">{item.age}</span>
+            {item.time && (
+              <div className="text-xs text-gray-500 mt-1">{item.time}</div>
+            )}
           </div>
         ))}
       </div>
 
-      {renderBars()}
+      {/* Interactive visual elements */}
+      <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-amber-300 rounded-full opacity-30 transition-all duration-700 transform group-hover:scale-110 group-hover:rotate-45"></div>
+      <div className="absolute top-4 right-4">
+        <div className="text-xs bg-white bg-opacity-70 rounded-full px-2 py-0.5 animate-pulse">
+          Live
+        </div>
+      </div>
     </div>
   );
 };

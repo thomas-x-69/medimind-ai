@@ -21,95 +21,6 @@ body {
   font-family: "Inter", sans-serif;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #5669ff;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #4a5ce0;
-}
-
-/* Calendar day styles */
-.calendar-day {
-  @apply flex items-center justify-center rounded-full;
-  width: 32px;
-  height: 32px;
-}
-
-.calendar-day.active {
-  @apply bg-[#5669FF] text-white;
-}
-
-.calendar-day.today:not(.active) {
-  @apply bg-gray-100;
-}
-
-.calendar-day-dot {
-  @apply w-1 h-1 bg-[#5669FF] rounded-full mx-auto mt-1;
-}
-
-/* Patient card styles */
-.patient-card {
-  @apply flex items-center p-4 bg-white rounded-xl shadow-sm;
-}
-
-.patient-icon {
-  @apply w-10 h-10 rounded-full flex items-center justify-center mr-3;
-}
-
-.emergency-bg {
-  @apply bg-red-50 text-red-500;
-}
-
-.routine-bg {
-  @apply bg-blue-50 text-blue-500;
-}
-
-.video-bg {
-  @apply bg-gray-50 text-gray-500;
-}
-
-.report-bg {
-  @apply bg-green-50 text-green-500;
-}
-
-/* Chart backgrounds */
-.chart-yellow-bg {
-  background-color: rgba(255, 209, 102, 0.2);
-}
-
-.chart-pink-bg {
-  background-color: rgba(255, 158, 185, 0.2);
-}
-
-.chart-green-bg {
-  background-color: rgba(121, 212, 137, 0.2);
-}
-
-.chart-blue-bg {
-  background-color: rgba(120, 174, 255, 0.2);
-}
-
-/* Animation utilities */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 @keyframes fadeSlideIn {
   from {
     opacity: 0;
@@ -121,6 +32,15 @@ body {
   }
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes scaleIn {
   from {
     transform: scale(0.9);
@@ -129,6 +49,38 @@ body {
   to {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
   }
 }
 
@@ -144,71 +96,14 @@ body {
   animation: fadeSlideIn 0.3s ease-out forwards;
 }
 
-/* Week labels in calendar */
-.calendar-week {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  text-align: center;
+.animate-bounce {
+  animation: bounce 0.5s ease-in-out;
 }
 
-.calendar-week-day {
-  font-size: 0.75rem;
-  color: #9ca3af;
+.animate-ping {
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
-.calendar-month {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  text-align: center;
-}
-
-.calendar-date {
-  position: relative;
-  cursor: pointer;
-}
-
-.calendar-date button {
-  width: 2rem;
-  height: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  border-radius: 9999px;
-  transition: all 200ms;
-}
-
-.calendar-date button:hover {
-  background-color: #f3f4f6;
-}
-
-.calendar-date.selected button {
-  background-color: #5669ff;
-  color: white;
-}
-
-.calendar-date.selected-day::after {
-  content: "";
-  position: absolute;
-  bottom: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  background-color: #5669ff;
-  border-radius: 9999px;
-}
-
-.calendar-date.has-event::after {
-  content: "";
-  position: absolute;
-  bottom: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  background-color: #ec4899;
-  border-radius: 9999px;
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
