@@ -2,38 +2,45 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  MdDashboard,
-  MdSchedule,
-  MdPeople,
-  MdInsights,
-  MdSchool,
-  MdArticle,
-  MdChat,
-  MdPayments,
-  MdOutlineInsertDriveFile,
-  MdSettings,
-  MdLogout,
-} from "react-icons/md";
+  LayoutGrid,
+  Calendar,
+  Users,
+  BarChart2,
+  GraduationCap,
+  FileText,
+  MessageSquare,
+  DollarSign,
+  FolderClosed,
+  Settings,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
-const Sidebar = () => {
+const Sidebar = ({ collapsed = false, toggleCollapsed }) => {
   const pathname = usePathname();
+  const [activeNavItem, setActiveNavItem] = React.useState("Dashboard");
 
   const menuItems = [
     {
       section: "General",
       items: [
-        { name: "Dashboard", icon: <MdDashboard size={20} />, path: "/" },
-        { name: "Schedule", icon: <MdSchedule size={20} />, path: "/schedule" },
-        { name: "Patients", icon: <MdPeople size={20} />, path: "/patients" },
+        { name: "Dashboard", icon: <LayoutGrid size={20} />, path: "/" },
+        { name: "Schedule", icon: <Calendar size={20} />, path: "/schedule" },
+        { name: "Patients", icon: <Users size={20} />, path: "/patients" },
         {
           name: "Statistics & reports",
-          icon: <MdInsights size={20} />,
+          icon: <BarChart2 size={20} />,
           path: "/statistics",
         },
-        { name: "Education", icon: <MdSchool size={20} />, path: "/education" },
+        {
+          name: "Education",
+          icon: <GraduationCap size={20} />,
+          path: "/education",
+        },
         {
           name: "My articles",
-          icon: <MdArticle size={20} />,
+          icon: <FileText size={20} />,
           path: "/articles",
         },
       ],
@@ -41,27 +48,48 @@ const Sidebar = () => {
     {
       section: "Tools",
       items: [
-        { name: "Chats & calls", icon: <MdChat size={20} />, path: "/chats" },
-        { name: "Billing", icon: <MdPayments size={20} />, path: "/billing" },
+        {
+          name: "Chats & calls",
+          icon: <MessageSquare size={20} />,
+          path: "/chats",
+        },
+        { name: "Billing", icon: <DollarSign size={20} />, path: "/billing" },
         {
           name: "Documents base",
-          icon: <MdOutlineInsertDriveFile size={20} />,
+          icon: <FolderClosed size={20} />,
           path: "/documents",
         },
-        { name: "Settings", icon: <MdSettings size={20} />, path: "/settings" },
+        { name: "Settings", icon: <Settings size={20} />, path: "/settings" },
       ],
     },
   ];
 
   return (
-    <aside className="w-[210px] h-screen bg-[#1A1F2B] text-white flex flex-col">
+    <aside className="w-[210px] h-screen bg-[#1A1F2B] text-white flex flex-col relative">
+      {/* Toggle sidebar button */}
+      {collapsed && (
+        <button
+          className="absolute -right-3 top-24 bg-black text-white w-6 h-12 rounded-r flex items-center justify-center transition-transform duration-300 hover:scale-110 z-50"
+          onClick={toggleCollapsed}
+        >
+          <ChevronRight size={14} />
+        </button>
+      )}
+
+      {!collapsed && (
+        <button
+          className="absolute -right-3 top-24 bg-black text-white w-6 h-12 rounded-r flex items-center justify-center transition-transform duration-300 hover:scale-110 z-50"
+          onClick={toggleCollapsed}
+        >
+          <ChevronLeft size={14} />
+        </button>
+      )}
+
       <div className="p-6 pl-8">
         <Link href="/" className="flex items-center">
-          <span className="text-2xl font-bold text-white">intelly</span>
-          <div className="w-5 h-5 bg-pink-400 rounded-full ml-2 relative overflow-hidden">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-            </div>
+          <span className="text-2xl font-bold text-white">medimind</span>
+          <div className="w-5 h-5 bg-pink-400 rounded-full ml-2 relative overflow-hidden flex items-center justify-center">
+            <span className="text-white text-xs font-bold">ai</span>
           </div>
         </Link>
       </div>
@@ -74,7 +102,8 @@ const Sidebar = () => {
             </p>
             <ul>
               {section.items.map((item) => {
-                const isActive = pathname === item.path;
+                const isActive =
+                  pathname === item.path || activeNavItem === item.name;
                 return (
                   <li key={item.name} className="px-3">
                     <Link
@@ -84,6 +113,7 @@ const Sidebar = () => {
                           ? "bg-[#5669FF] bg-opacity-10 text-[#5669FF] border-l-4 border-[#5669FF]"
                           : "text-gray-300 hover:bg-white hover:bg-opacity-5"
                       }`}
+                      onClick={() => setActiveNavItem(item.name)}
                     >
                       <span
                         className={`mr-3 ${
@@ -104,7 +134,7 @@ const Sidebar = () => {
 
       <div className="p-6 px-8 mt-auto">
         <button className="flex items-center text-gray-300 hover:text-white">
-          <MdLogout className="mr-3 text-xl" />
+          <LogOut className="mr-3 text-xl" />
           Log out
         </button>
       </div>

@@ -3,12 +3,29 @@ import { Chart, registerables } from "chart.js";
 
 Chart.register(...registerables);
 
-const VisitsSummary = () => {
+const VisitsSummary = ({ isLoaded = false }) => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
+  // Visit data
+  const visitData = [
+    { label: "AVERAGE", value: "24", unit: "min" },
+    { label: "MINIMUM", value: "15", unit: "min" },
+    { label: "MAXIMUM", value: "01:30", unit: "h" },
+  ];
+
+  const timeSlots = [
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+  ];
+
   useEffect(() => {
-    if (chartRef.current) {
+    if (chartRef.current && isLoaded) {
       // Destroy previous chart if it exists
       if (chartInstance.current) {
         chartInstance.current.destroy();
@@ -23,7 +40,7 @@ const VisitsSummary = () => {
 
       // Sample data to match the design
       const data = {
-        labels: ["10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30"],
+        labels: timeSlots,
         datasets: [
           {
             label: "Visits",
@@ -46,6 +63,10 @@ const VisitsSummary = () => {
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          animation: {
+            duration: 1500,
+            easing: "easeOutQuart",
+          },
           plugins: {
             legend: {
               display: false,
@@ -82,31 +103,33 @@ const VisitsSummary = () => {
         chartInstance.current.destroy();
       }
     };
-  }, []);
+  }, [isLoaded, timeSlots]);
 
   return (
-    <div className="p-5 bg-pink-50/30 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-40 h-40 rounded-full bg-pink-200 opacity-20 -mr-10 -mt-10"></div>
+    <div className="p-5">
       <h3 className="text-lg font-semibold mb-4">Visits summary:</h3>
       <div className="flex justify-between mb-5">
-        <div className="flex flex-col items-center">
-          <span className="text-xl font-bold">24</span>
-          <span className="text-xs text-gray-500 uppercase">min</span>
-          <span className="text-xs text-gray-500">AVERAGE</span>
-        </div>
-        <div className="flex flex-col items-center">
-          <span className="text-xl font-bold">15</span>
-          <span className="text-xs text-gray-500 uppercase">min</span>
-          <span className="text-xs text-gray-500">MINIMUM</span>
-        </div>
-        <div className="flex flex-col items-center">
-          <span className="text-xl font-bold">01:30</span>
-          <span className="text-xs text-gray-500 uppercase">h</span>
-          <span className="text-xs text-gray-500">MAXIMUM</span>
-        </div>
+        {visitData.map((item) => (
+          <div key={item.label} className="flex flex-col items-center">
+            <span className="text-xl font-bold">
+              {item.value}{" "}
+              <span className="text-xs text-gray-500 uppercase">
+                {item.unit}
+              </span>
+            </span>
+            <span className="text-xs text-gray-500">{item.label}</span>
+          </div>
+        ))}
       </div>
+
       <div className="h-36 relative">
         <canvas ref={chartRef}></canvas>
+      </div>
+
+      <div className="flex justify-between text-xs text-gray-500">
+        {timeSlots.map((time) => (
+          <span key={time}>{time}</span>
+        ))}
       </div>
     </div>
   );

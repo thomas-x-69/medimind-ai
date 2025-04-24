@@ -1,9 +1,12 @@
 import React from "react";
 
-const VisitDetails = () => {
+const VisitDetails = ({
+  isLoaded = false,
+  patientName = "Taigo Wilkinson",
+}) => {
   // Static data to match the design
   const patientDetails = {
-    name: "Taigo Wilkinson",
+    name: patientName,
     gender: "Male",
     age: "38 Years 5 Months",
     id: "16G4-TES-MK72",
@@ -13,18 +16,34 @@ const VisitDetails = () => {
       date: "21 April 2021",
     },
     prescription: {
-      id: "#Z.093K1O",
-      medicine: "Paracetamol",
-      dosage: "2 times a day",
-      instructions: "Dosepak - Day and Night before meal",
+      id: "#Z293K1O",
+      medications: [
+        {
+          name: "Paracetamol",
+          dosage: "2 times a day",
+        },
+        {
+          name: "Diazepam",
+          instructions: "Day and Night before meal",
+        },
+      ],
     },
     observations: "High fever and cough at normal hemoglobin levels.",
   };
 
+  const getSymptomClass = (symptom) => {
+    if (symptom === "Fever") {
+      return "bg-red-100 text-red-700";
+    } else if (symptom === "Cough") {
+      return "bg-amber-100 text-amber-700";
+    } else {
+      return "bg-purple-100 text-purple-700";
+    }
+  };
+
   return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-      <div className="p-5 border-b">
-        <h3 className="text-lg font-semibold mb-2">Visit details</h3>
+    <div className="bg-pink-100 rounded-xl shadow-sm overflow-hidden">
+      <div className="p-5 border-b border-pink-200">
         <div className="flex justify-between items-center">
           <h4 className="font-medium text-lg">{patientDetails.name}</h4>
           <div className="text-sm text-gray-500">
@@ -33,18 +52,14 @@ const VisitDetails = () => {
         </div>
       </div>
 
-      <div className="p-5 bg-pink-50">
+      <div className="p-5">
         <div className="flex flex-wrap gap-2 mb-4">
-          {patientDetails.symptoms.map((symptom, index) => (
+          {patientDetails.symptoms.map((symptom) => (
             <div
-              key={index}
-              className={`text-sm px-3 py-1 rounded-full ${
-                symptom === "Fever"
-                  ? "bg-red-100 text-red-700"
-                  : symptom === "Cough"
-                  ? "bg-yellow-100 text-yellow-700"
-                  : "bg-purple-100 text-purple-700"
-              }`}
+              key={symptom}
+              className={`text-sm px-3 py-1 rounded-full ${getSymptomClass(
+                symptom
+              )}`}
             >
               {symptom}
             </div>
@@ -52,7 +67,7 @@ const VisitDetails = () => {
         </div>
 
         <div className="mb-4">
-          <div className="text-sm mb-1">
+          <div className="text-sm">
             <span className="text-gray-500">Last Checked: </span>
             <span className="font-medium">
               {patientDetails.lastChecked.doctor}
@@ -72,25 +87,21 @@ const VisitDetails = () => {
           <p className="text-sm">{patientDetails.observations}</p>
         </div>
 
-        <div>
+        <div className="mb-6">
           <h5 className="text-sm text-gray-500 mb-1">Prescription:</h5>
-          <div className="text-sm">
-            <div className="font-medium">
-              {patientDetails.prescription.medicine} -{" "}
-              {patientDetails.prescription.dosage}
+          {patientDetails.prescription.medications.map((medication, index) => (
+            <div key={index} className="text-sm">
+              {medication.name} - {medication.dosage || medication.instructions}
             </div>
-            <div className="text-gray-500">
-              {patientDetails.prescription.instructions}
-            </div>
-          </div>
+          ))}
         </div>
-      </div>
 
-      {/* View all details button */}
-      <div className="p-4 text-center">
-        <button className="bg-black text-white py-3 px-6 rounded-full text-sm font-medium w-full">
-          View all details
-        </button>
+        {/* View all details button */}
+        <div className="text-center">
+          <button className="bg-black text-white py-3 px-6 rounded-full text-sm font-medium w-full">
+            View all details
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import { Providers } from "@/store/providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "MediMind.AI - Advanced Patient Management",
+  title: "Medimind.AI - Advanced Patient Management",
   description: "Streamline your medical practice with MediMind.AI dashboard",
 };
 

@@ -2,7 +2,7 @@ import React from "react";
 
 const GreetingHeader = () => {
   return (
-    <div className="mb-6">
+    <div>
       <h1 className="text-4xl font-bold text-[#1A1F2B] mb-2">
         Good morning, Dr.Olivia
       </h1>

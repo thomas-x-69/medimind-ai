@@ -26,7 +26,7 @@ module.exports = {
         sidebar: "#1A1F2B", // Sidebar dark color
         background: {
           DEFAULT: "#FFFFFF",
-          light: "#F5F5F7",
+          light: "#FEF6E6", // Beige background in the design
         },
         text: {
           DEFAULT: "#1A1F2B",
@@ -49,7 +49,43 @@ module.exports = {
       boxShadow: {
         card: "0 4px 20px rgba(0, 0, 0, 0.05)",
       },
+      animation: {
+        fadeIn: "fadeIn 0.3s ease-out",
+        scaleIn: "scaleIn 0.3s ease-out",
+        fadeSlideIn: "fadeSlideIn 0.3s ease-out",
+        bounce: "bounce 0.5s ease-in-out",
+        ping: "ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite",
+        pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      },
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        scaleIn: {
+          "0%": { transform: "scale(0.9)", opacity: "0" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
+        fadeSlideIn: {
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+      },
     },
   },
   plugins: [],
+  safelist: [
+    "bg-pink-100",
+    "bg-pink-300",
+    "bg-blue-100",
+    "bg-blue-300",
+    "bg-amber-100",
+    "bg-amber-300",
+    "bg-green-100",
+    "bg-green-300",
+    "bg-red-100",
+    "bg-red-300",
+    "bg-gray-100",
+    "bg-gray-300",
+  ],
 };

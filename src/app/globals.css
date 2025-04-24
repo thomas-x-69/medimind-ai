@@ -5,7 +5,7 @@
 
 :root {
   --foreground-rgb: 26, 31, 43;
-  --background-rgb: 245, 245, 247;
+  --background-rgb: 254, 246, 230;
   --primary-color: #5669ff;
   --secondary-color: #ffd166;
   --accent-red: #ff5454;
@@ -100,43 +100,115 @@ body {
   background-color: rgba(120, 174, 255, 0.2);
 }
 
-/* Add shadow utility */
-.subtle-shadow {
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+/* Animation utilities */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-/* Timeline styles */
-.timeline-item {
-  @apply relative pl-8 pb-6 border-l border-gray-200;
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.timeline-dot {
-  @apply absolute -left-2 w-4 h-4 rounded-full flex items-center justify-center;
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-.timeline-dot-inner {
-  @apply w-2 h-2 rounded-full bg-white;
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
-.timeline-time {
-  @apply absolute -left-16 text-xs text-gray-500;
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease-out forwards;
 }
 
-/* Custom fonts for titles */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Inter", sans-serif;
+.animate-fadeSlideIn {
+  animation: fadeSlideIn 0.3s ease-out forwards;
 }
 
-/* Custom button styles */
-.btn-primary {
-  @apply bg-[#5669FF] text-white px-4 py-2 rounded-full text-sm font-medium;
+/* Week labels in calendar */
+.calendar-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
 }
 
-.btn-secondary {
-  @apply bg-black text-white px-4 py-2 rounded-full text-sm font-medium;
+.calendar-week-day {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.calendar-month {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+}
+
+.calendar-date {
+  position: relative;
+  cursor: pointer;
+}
+
+.calendar-date button {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  border-radius: 9999px;
+  transition: all 200ms;
+}
+
+.calendar-date button:hover {
+  background-color: #f3f4f6;
+}
+
+.calendar-date.selected button {
+  background-color: #5669ff;
+  color: white;
+}
+
+.calendar-date.selected-day::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background-color: #5669ff;
+  border-radius: 9999px;
+}
+
+.calendar-date.has-event::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background-color: #ec4899;
+  border-radius: 9999px;
 }
