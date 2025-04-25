@@ -168,18 +168,6 @@ const VisitsSummary = ({
       )}
 
       {/* Heart background */}
-      <div className="absolute bottom-40 -right-10 opacity-40">
-        <svg
-          width="150"
-          height="150"
-          viewBox="0 0 24 24"
-          fill="#e05c8c"
-          stroke="none"
-          className="transform -rotate-20"
-        >
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>
-        </svg>
-      </div>
 
       <div className="flex justify-between items-center mb-4 relative z-20">
         <h2 className="text-xl font-bold text-[#a74b7b]">Visits summary</h2>
@@ -194,10 +182,6 @@ const VisitsSummary = ({
           >
             <div className="text-xs text-[#a74b7b]">{item.label}</div>
             <div className="font-bold text-lg text-[#903b67]">{item.value}</div>
-            <div
-              className="w-full mt-1 border-b border-[#a74b7b] opacity-30"
-              style={{ width: "3.5rem" }}
-            ></div>
           </div>
         ))}
       </div>
