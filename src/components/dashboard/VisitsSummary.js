@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 
 const VisitsSummary = ({
   cardType,
@@ -23,15 +23,123 @@ const VisitsSummary = ({
   timeSlots,
   draggingEnabled,
 }) => {
+  // Reference for canvas element
+  const canvasRef = useRef(null);
+
+  // Draw smooth chart on canvas
+  useEffect(() => {
+    if (!canvasRef.current || !chartData || !isLoaded) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const width = canvas.width;
+    const height = canvas.height;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
+
+    // Draw gradient background
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, "#dfabd1");
+    gradient.addColorStop(1, "#dfabd110");
+
+    // Draw gridlines
+    ctx.beginPath();
+    for (let i = 0; i < 4; i++) {
+      const y = height - (i + 1) * (height / 5);
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+    }
+    ctx.strokeStyle = "rgba(227, 177, 92, 0.15)";
+    ctx.stroke();
+
+    // Create points for smooth curve
+    const points = chartData.map((point, index) => ({
+      x: (index / (chartData.length - 1)) * width,
+      y: height - ((point.y - 5) / 45) * height,
+    }));
+
+    // Draw the smooth curve
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+
+    // Create smooth curve with bezier curves
+    for (let i = 0; i < points.length - 1; i++) {
+      const xc = (points[i].x + points[i + 1].x) / 2;
+      const yc = (points[i].y + points[i + 1].y) / 2;
+      ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+    }
+    ctx.quadraticCurveTo(
+      points[points.length - 2].x,
+      points[points.length - 2].y,
+      points[points.length - 1].x,
+      points[points.length - 1].y
+    );
+
+    // Continue the path for the fill
+    ctx.lineTo(width, height);
+    ctx.lineTo(0, height);
+    ctx.closePath();
+
+    // Fill with gradient
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    // Draw the line on top
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+
+    for (let i = 0; i < points.length - 1; i++) {
+      const xc = (points[i].x + points[i + 1].x) / 2;
+      const yc = (points[i].y + points[i + 1].y) / 2;
+      ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+    }
+    ctx.quadraticCurveTo(
+      points[points.length - 2].x,
+      points[points.length - 2].y,
+      points[points.length - 1].x,
+      points[points.length - 1].y
+    );
+
+    ctx.strokeStyle = "#E05C8C";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Draw highlighted data point if any
+    if (hoveredDataPoint !== null) {
+      const point = points[hoveredDataPoint];
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = "#E05C8C";
+      ctx.fill();
+      ctx.strokeStyle = "white";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    // Always highlight a specific point (index 22) with a smaller dot
+    if (points[22]) {
+      ctx.beginPath();
+      ctx.arc(points[22].x, points[22].y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = "#E05C8C";
+      ctx.fill();
+      ctx.strokeStyle = "white";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+  }, [chartData, isLoaded, hoveredDataPoint]);
+
   return (
     <div
       key={`card-${cardType}`}
-      className={`${
-        cardBgClasses[cardType]
-      } rounded-2xl p-5 relative overflow-hidden transition-all duration-500 transform ${scaleInClass} ${fadeInClass} delay-300 
+      className={`rounded-2xl p-5 relative overflow-hidden transition-all duration-500 transform ${scaleInClass} ${fadeInClass} delay-300 
       ${draggingEnabled ? "draggable-component" : ""}
       ${hoveredCard === cardType ? "scale-[1.02]" : ""} 
       ${isDragging && draggedItem === cardType ? "dragging" : "opacity-100"}`}
+      style={{
+        background:
+          "linear-gradient(to bottom, rgba(244, 114, 182, 0.75), rgba(244, 114, 182, 0.2))",
+      }}
       onMouseEnter={() => setHoveredCard(cardType)}
       onMouseLeave={() => setHoveredCard(null)}
       draggable={draggingEnabled}
@@ -59,232 +167,89 @@ const VisitsSummary = ({
         </div>
       )}
 
-      <div className="flex justify-between items-center mb-4 relative z-20">
-        <h2 className="text-xl font-bold">Visits summary:</h2>
-        <div className="flex space-x-2">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              // Generate new random data
-              setChartData(
-                chartData.map((point) => ({
-                  ...point,
-                  y: Math.max(
-                    5,
-                    Math.min(45, point.y + (Math.random() * 10 - 5))
-                  ),
-                }))
-              );
-            }}
-            className="text-xs flex items-center space-x-1 bg-black text-white px-2 py-0.5 rounded-full hover:bg-gray-700 transition-colors duration-300"
-          >
-            <svg
-              width="10"
-              height="10"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M23 4v6h-6"></path>
-              <path d="M1 20v-6h6"></path>
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-            </svg>
-            <span>Refresh</span>
-          </button>
-        </div>
+      {/* Heart background */}
+      <div className="absolute bottom-40 -right-10 opacity-40">
+        <svg
+          width="150"
+          height="150"
+          viewBox="0 0 24 24"
+          fill="#e05c8c"
+          stroke="none"
+          className="transform -rotate-20"
+        >
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
       </div>
 
-      <div className="flex space-x-10 mb-2 relative z-20">
+      <div className="flex justify-between items-center mb-4 relative z-20">
+        <h2 className="text-xl font-bold text-[#a74b7b]">Visits summary</h2>
+        <div className="flex space-x-2"></div>
+      </div>
+
+      <div className="flex space-x-10 mb-8 relative z-20">
         {visitData.map((item, idx) => (
           <div
             key={item.label}
             className="transition-all duration-300 hover:transform hover:scale-105 cursor-pointer"
           >
-            <div className="text-xs text-gray-500">{item.label}</div>
-            <div className="font-bold text-lg">{item.value}</div>
+            <div className="text-xs text-[#a74b7b]">{item.label}</div>
+            <div className="font-bold text-lg text-[#903b67]">{item.value}</div>
+            <div
+              className="w-full mt-1 border-b border-[#a74b7b] opacity-30"
+              style={{ width: "3.5rem" }}
+            ></div>
           </div>
         ))}
       </div>
 
-      <div className="h-20 w-full relative z-20">
-        <svg
-          viewBox="0 0 400 60"
-          className="w-full"
+      <div className="h-20 w-full relative z-20 pt-2">
+        <canvas
+          ref={canvasRef}
+          width="400"
+          height="80"
+          className="w-full h-full cursor-pointer"
+          onMouseMove={(e) => {
+            if (!chartData) return;
+
+            const rect = e.target.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const index = Math.round((x / rect.width) * (chartData.length - 1));
+
+            if (index >= 0 && index < chartData.length) {
+              setHoveredDataPoint(index);
+            }
+          }}
           onMouseLeave={() => setHoveredDataPoint(null)}
-        >
-          {/* Grid lines */}
-          <line
-            x1="0"
-            y1="50"
-            x2="400"
-            y2="50"
-            stroke="#e5e7eb"
-            strokeWidth="1"
-          />
-          <line
-            x1="0"
-            y1="35"
-            x2="400"
-            y2="35"
-            stroke="#e5e7eb"
-            strokeWidth="1"
-          />
-          <line
-            x1="0"
-            y1="20"
-            x2="400"
-            y2="20"
-            stroke="#e5e7eb"
-            strokeWidth="1"
-          />
-          <line
-            x1="0"
-            y1="5"
-            x2="400"
-            y2="5"
-            stroke="#e5e7eb"
-            strokeWidth="1"
-          />
+        />
 
-          {/* Chart.js style curve with gradient */}
-          <defs>
-            <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#ec4899" stopOpacity="0.1" />
-              <stop offset="100%" stopColor="#ec4899" stopOpacity="0" />
-            </linearGradient>
-          </defs>
+        {/* Tooltip for hovered data point */}
+        {hoveredDataPoint !== null && chartData && (
+          <div
+            className="absolute bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs transform -translate-x-1/2 -translate-y-full pointer-events-none"
+            style={{
+              left: `${(hoveredDataPoint / (chartData.length - 1)) * 100}%`,
+              top: "0",
+            }}
+          >
+            {hoveredDataPoint === 22
+              ? "10 min"
+              : `${Math.round(50 - chartData[hoveredDataPoint].y)} min`}
+          </div>
+        )}
 
-          {/* Area fill under the line */}
-          {chartData && (
-            <path
-              d={
-                isLoaded
-                  ? `M${chartData[0].x},${chartData[0].y} ${chartData
-                      .map((point) => `L${point.x},${point.y}`)
-                      .join(" ")} L${chartData[chartData.length - 1].x},50 L${
-                      chartData[0].x
-                    },50 Z`
-                  : "M0,50 L400,50 Z"
-              }
-              fill="url(#lineGradient)"
-              className="transition-all duration-1000"
-            />
-          )}
-
-          {/* Main curve line */}
-          {chartData && (
-            <path
-              d={
-                isLoaded
-                  ? `M${chartData[0].x},${chartData[0].y} ${chartData
-                      .map((point) => `L${point.x},${point.y}`)
-                      .join(" ")}`
-                  : "M0,50 L400,50"
-              }
-              fill="none"
-              stroke="#ec4899"
-              strokeWidth="2"
-              className="transition-all duration-1000"
-            />
-          )}
-
-          {/* Interactive data points */}
-          {chartData &&
-            chartData.map((point, idx) => (
-              <circle
-                key={idx}
-                cx={point.x}
-                cy={isLoaded ? point.y : 50}
-                r={idx === 22 ? 3 : 0} // Only show the highlighted point initially
-                fill="#ec4899"
-                stroke={idx === 22 ? "white" : "none"}
-                strokeWidth="1"
-                className="transition-all duration-300 cursor-pointer"
-                style={{
-                  transform:
-                    hoveredDataPoint === idx
-                      ? "scale(1.5)"
-                      : idx === 22
-                      ? "scale(1)"
-                      : "scale(0)",
-                  transformOrigin: `${point.x}px ${point.y}px`,
-                  opacity:
-                    idx === 22 ||
-                    hoveredDataPoint === idx ||
-                    (hoveredDataPoint !== null &&
-                      Math.abs(hoveredDataPoint - idx) < 2)
-                      ? 1
-                      : 0,
-                }}
-                onMouseEnter={() => setHoveredDataPoint(idx)}
-              />
-            ))}
-
-          {/* Interactive tooltip for data point */}
-          {hoveredDataPoint !== null && chartData && (
-            <g>
-              <rect
-                x={chartData[hoveredDataPoint].x - 30}
-                y={chartData[hoveredDataPoint].y - 30}
-                width="60"
-                height="22"
-                rx="4"
-                fill="rgba(0,0,0,0.8)"
-              />
-              <text
-                x={chartData[hoveredDataPoint].x}
-                y={chartData[hoveredDataPoint].y - 15}
-                textAnchor="middle"
-                fill="white"
-                fontSize="12"
-                fontWeight="bold"
-              >
-                {hoveredDataPoint === 22
-                  ? "10 min"
-                  : `${Math.round(50 - chartData[hoveredDataPoint].y)} min`}
-              </text>
-            </g>
-          )}
-
-          {/* Highlight line */}
-          <line
-            x1="180"
-            y1={isLoaded ? "10" : "50"}
-            x2="180"
-            y2="60"
-            stroke="#9ca3af"
-            strokeDasharray="3"
-            strokeWidth="1"
-            className="transition-all duration-1000"
-          />
-        </svg>
-
-        <div className="absolute top-full left-0 right-0 mt-1 flex justify-between text-xs text-gray-500">
+        <div className="absolute top-full left-0 right-0 mt-1 flex justify-between text-xs text-[#a74b7b]">
           {timeSlots.map((time, idx) => (
             <span
               key={time}
               className={`${
-                idx === 3 ? "font-bold text-black" : ""
-              } cursor-pointer hover:text-gray-800 transition-colors duration-300`}
-              onClick={() => {
-                // Update the highlight line position
-                const line = chartRef.current?.querySelector("line");
-                if (line) {
-                  const x = 57 + idx * 57; // Rough calculation based on 7 time slots
-                  line.setAttribute("x1", x);
-                  line.setAttribute("x2", x);
-                }
-              }}
+                idx === 3 ? "font-bold text-[#903b67]" : ""
+              } cursor-pointer hover:text-[#903b67] transition-colors duration-300`}
             >
               {time}
             </span>
           ))}
         </div>
       </div>
-
-      <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-pink-300 rounded-full opacity-30 transition-transform duration-700 transform group-hover:scale-110"></div>
-      <div className="absolute -top-10 -right-10 w-32 h-32 bg-pink-300 rounded-full opacity-30 transition-transform duration-700 transform group-hover:scale-110"></div>
     </div>
   );
 };
