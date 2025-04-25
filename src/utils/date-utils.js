@@ -1,4 +1,11 @@
-import { format, startOfWeek, addDays, isSameDay, parseISO } from "date-fns";
+import {
+  format,
+  startOfWeek,
+  addDays,
+  isSameDay,
+  parseISO,
+  isValid,
+} from "date-fns";
 
 // Format date as "May 2024"
 export const formatMonthYear = (date) => {
@@ -28,10 +35,40 @@ export const getCurrentWeekDays = () => {
 
 // Format date as "23 April 2021"
 export const formatFullDate = (dateString) => {
+  // Return empty string for undefined, null, or empty string
   if (!dateString) return "";
-  const date =
-    typeof dateString === "string" ? parseISO(dateString) : dateString;
-  return format(date, "dd MMMM yyyy");
+
+  try {
+    let date;
+    if (typeof dateString === "string") {
+      // Try to parse the string as a date
+      date = parseISO(dateString);
+      // Check if parsing was successful
+      if (!isValid(date)) {
+        // Try creating a date directly as fallback
+        date = new Date(dateString);
+        if (!isValid(date)) {
+          return "Invalid date";
+        }
+      }
+    } else if (dateString instanceof Date) {
+      // If it's already a Date object, use it directly
+      date = dateString;
+      // Check if it's a valid Date object
+      if (!isValid(date)) {
+        return "Invalid date";
+      }
+    } else {
+      // Not a string or Date object
+      return "Invalid date format";
+    }
+
+    // Now we have a valid date, format it
+    return format(date, "dd MMMM yyyy");
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return "Date formatting error";
+  }
 };
 
 // Format appointment time slots

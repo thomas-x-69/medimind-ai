@@ -10,8 +10,8 @@ const TopBar = ({
   isSearching,
   setIsSearching,
   searchInputRef,
-  activeTags,
-  toggleTag,
+  activeTags = [], // Add default empty array here
+  toggleTag = () => {}, // Add default empty function
   liveTimeUpdate,
   pendingAlert,
   nextPatientTimer,

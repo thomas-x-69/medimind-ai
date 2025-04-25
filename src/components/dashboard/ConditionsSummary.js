@@ -3,7 +3,6 @@ import React from "react";
 const ConditionsSummary = ({
   cardType,
   isLoaded,
-  cardBgClasses,
   scaleInClass,
   fadeInClass,
   hoveredCard,
@@ -21,18 +20,22 @@ const ConditionsSummary = ({
 }) => {
   // Condition data
   const conditionData = [
-    { count: 14, label: "STABLE", color: "green" },
-    { count: 5, label: "FAIR", color: "amber" },
-    { count: 1, label: "CRITICAL", color: "red" },
+    { count: 14, label: "STABLE", color: "#4CAF50" },
+    { count: 5, label: "FAIR", color: "#FFC107" },
+    { count: 1, label: "CRITICAL", color: "#FF5454" },
   ];
 
   return (
     <div
       key={`card-${cardType}`}
-      className={`bg-green-100 rounded-3xl p-5 relative overflow-hidden transition-all duration-500 transform ${scaleInClass} ${fadeInClass} delay-400 
+      className={`rounded-2xl p-5 relative overflow-hidden transition-all duration-500 transform ${scaleInClass} ${fadeInClass} delay-400 col-span-2 
       ${draggingEnabled ? "draggable-component" : ""}
       ${hoveredCard === cardType ? "scale-[1.02]" : ""} 
       ${isDragging && draggedItem === cardType ? "dragging" : "opacity-100"}`}
+      style={{
+        background: "linear-gradient(to bottom, #E3B15C, #FFECD1)",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
+      }}
       onMouseEnter={() => setHoveredCard(cardType)}
       onMouseLeave={() => setHoveredCard(null)}
       draggable={draggingEnabled}
@@ -51,6 +54,43 @@ const ConditionsSummary = ({
         handleDrop(cardType);
       }}
     >
+      {/* Cross decoration in background */}
+      <div
+        style={{
+          position: "absolute",
+          right: 0,
+          top: 0,
+          width: "8rem",
+          height: "8rem",
+          opacity: 0.2,
+          transform: "rotate(20deg)",
+          zIndex: 0,
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: "-2rem",
+            right: "2rem",
+            width: "3rem",
+            height: "11rem",
+            backgroundColor: "#b85011",
+            borderRadius: "0.5rem",
+          }}
+        ></div>
+        <div
+          style={{
+            position: "absolute",
+            top: "2rem",
+            right: "-1.5rem",
+            width: "11rem",
+            height: "3rem",
+            backgroundColor: "#b85011",
+            borderRadius: "0.5rem",
+          }}
+        ></div>
+      </div>
+
       {draggingEnabled && (
         <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-5 z-10 flex items-center justify-center pointer-events-none">
           <div className="bg-white bg-opacity-80 px-3 py-1 rounded-lg text-sm font-medium">
@@ -59,109 +99,87 @@ const ConditionsSummary = ({
         </div>
       )}
 
-      <div className="flex justify-between items-center mb-4 relative z-20">
-        <h2 className="text-xl font-bold">By condition:</h2>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            openModal("condition");
-          }}
-          className="text-xs bg-black text-white px-2 py-0.5 rounded-full hover:bg-gray-700 transition-colors duration-300"
-        >
-          Details
-        </button>
+      {/* First flex container - Header */}
+      <div className="flex justify-between items-center mb-6 relative z-20">
+        <h2 className="text-xl font-bold text-[#92400E]">By condition</h2>
       </div>
 
-      <div className="flex space-x-12 relative z-20">
-        {conditionData.map((item, idx) => (
-          <div
-            key={item.label}
-            className="transition-all duration-300 hover:transform hover:scale-105 cursor-pointer relative group"
-            onClick={(e) => {
-              e.stopPropagation();
-              // Visual feedback
-              const el = e.currentTarget;
-              el.classList.add("animate-bounce");
-              setTimeout(() => el.classList.remove("animate-bounce"), 300);
-
-              // Show toast
-              setShowToast(true);
-              setToastMessage(
-                `${
-                  item.count
-                } patients in ${item.label.toLowerCase()} condition`
-              );
-              setTimeout(() => setShowToast(false), 2000);
-            }}
-          >
+      {/* Second flex container with responsive classes */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-20">
+        {/* First column - Patient conditions */}
+        <div className="flex flex-col space-y-6">
+          {conditionData.map((item) => (
             <div
-              className={`font-bold text-lg ${
-                isLoaded ? "opacity-100" : "opacity-0"
-              } transition-opacity duration-700 delay-${(idx + 1) * 100}`}
+              key={item.label}
+              className="flex flex-col transition-all duration-300 hover:scale-105 cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                const el = e.currentTarget;
+                el.classList.add("animate-bounce");
+                setTimeout(() => el.classList.remove("animate-bounce"), 300);
+
+                setShowToast(true);
+                setToastMessage(
+                  `${
+                    item.count
+                  } patients in ${item.label.toLowerCase()} condition`
+                );
+                setTimeout(() => setShowToast(false), 2000);
+              }}
             >
-              {item.count} pers
-            </div>
-            <div
-              className={`text-xs text-gray-500 ${
-                isLoaded ? "opacity-100" : "opacity-0"
-              } transition-opacity duration-700 delay-${(idx + 1) * 100}`}
-            >
-              {item.label}
-            </div>
-
-            {/* Animated indicator */}
-            <div
-              className={`absolute -right-4 top-0 h-2 w-2 rounded-full ${
-                item.color === "green"
-                  ? "bg-green-500"
-                  : item.color === "amber"
-                  ? "bg-amber-500"
-                  : "bg-red-500"
-              } ${item.label === "CRITICAL" ? "animate-ping" : ""}`}
-            ></div>
-
-            {/* Hover details */}
-            <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs z-10 w-32">
-              <div className="font-bold">{item.label}</div>
-              <div className="mt-1">
-                <div className="flex justify-between">
-                  <span>Male:</span>
-                  <span>{Math.round(item.count * 0.6)}</span>
+              <div className="flex items-center">
+                <div
+                  className={`w-3 h-3 rounded-full mr-2`}
+                  style={{ backgroundColor: item.color }}
+                ></div>
+                <div className="text-sm font-medium text-[#92400E]">
+                  {item.label}
                 </div>
-                <div className="flex justify-between">
-                  <span>Female:</span>
-                  <span>{Math.round(item.count * 0.4)}</span>
+              </div>
+              <div className="font-bold text-2xl text-[#78350F] ml-5">
+                {item.count} pers
+              </div>
+              <div
+                className="w-full mt-1 border-b border-[#92400E] opacity-30 ml-5"
+                style={{ width: "8rem" }}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Second column - Charts or stats */}
+        <div className="col-span-1 md:col-span-1 lg:col-span-2 relative">
+          <div className="space-y-4">
+            {conditionData.map((item, index) => (
+              <div key={`progress-${item.label}`} className="mb-4">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-sm font-medium text-[#92400E]">
+                    {item.label}
+                  </span>
+                  <span className="text-xs text-[#78350F]">
+                    {Math.round((item.count / 20) * 100)}%
+                  </span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Avg age:</span>
-                  <span>{30 + idx * 10} yrs</span>
+                <div className="h-3 bg-[#F3E1C8] rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-1000"
+                    style={{
+                      width: `${(item.count / 20) * 100}%`,
+                      backgroundColor: item.color,
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+
+            <div className="mt-4 pt-4 border-t border-[#92400E] border-opacity-20">
+              <div className="flex justify-center text-xl text-[#92400E] ">
+                <div>
+                  Total patients: <span className="font-bold ">20</span>
                 </div>
               </div>
             </div>
           </div>
-        ))}
-      </div>
-
-      <div className="absolute bottom-0 right-0 w-32 h-32 bg-green-200 rounded-tr-full opacity-50 transition-transform duration-700 transform group-hover:rotate-12"></div>
-
-      {/* Animated decoration */}
-      <div
-        className={`absolute bottom-4 left-4 transition-all duration-500 ${
-          isLoaded ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        <div className="relative flex items-center justify-center">
-          <div className="absolute inset-0 bg-green-500 rounded-full opacity-10 animate-ping"></div>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#16a34a"
-            strokeWidth="2"
-          >
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-          </svg>
         </div>
       </div>
     </div>
