@@ -674,7 +674,7 @@ const MedicalDashboard = () => {
               className={`grid grid-cols-2 gap-4 mt-6 transition-all duration-500 ${fadeInClass} delay-700`}
             >
               {/* Patient List */}
-              <PatientsList
+              {/* <PatientsList
                 patients={patients}
                 isLoaded={isLoaded}
                 selectedPatient={selectedPatient}
@@ -683,10 +683,10 @@ const MedicalDashboard = () => {
                 isExpanded={isExpanded}
                 setIsExpanded={setIsExpanded}
                 openModal={openModal}
-              />
+              /> */}
 
               {/* Visit Details */}
-              <VisitDetails
+              {/* <VisitDetails
                 selectedPatient={selectedPatient}
                 patientCardRef={patientCardRef}
                 patientNotes={patientNotes}
@@ -695,7 +695,7 @@ const MedicalDashboard = () => {
                 isAnimatingVitals={isAnimatingVitals}
                 medications={medications}
                 openModal={openModal}
-              />
+              /> */}
             </div>
           </div>
         );

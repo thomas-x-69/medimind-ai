@@ -101,7 +101,7 @@ const VisitsSummary = ({
       points[points.length - 1].y
     );
 
-    ctx.strokeStyle = "#E05C8C";
+    ctx.strokeStyle = "#5c8ce6";
     ctx.lineWidth = 2;
     ctx.stroke();
 
@@ -110,7 +110,7 @@ const VisitsSummary = ({
       const point = points[hoveredDataPoint];
       ctx.beginPath();
       ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
-      ctx.fillStyle = "#E05C8C";
+      ctx.fillStyle = "#5c8ce6";
       ctx.fill();
       ctx.strokeStyle = "white";
       ctx.lineWidth = 1.5;
@@ -121,7 +121,7 @@ const VisitsSummary = ({
     if (points[22]) {
       ctx.beginPath();
       ctx.arc(points[22].x, points[22].y, 3, 0, Math.PI * 2);
-      ctx.fillStyle = "#E05C8C";
+      ctx.fillStyle = "#5c8ce6";
       ctx.fill();
       ctx.strokeStyle = "white";
       ctx.lineWidth = 1;
@@ -132,14 +132,16 @@ const VisitsSummary = ({
   return (
     <div
       key={`card-${cardType}`}
-      className={`rounded-2xl p-5 relative overflow-hidden transition-all duration-500 transform ${scaleInClass} ${fadeInClass} delay-300 
+      className={`bg-blue-600/10 rounded-2xl p-5 relative overflow-hidden transition-all duration-500 transform ${scaleInClass} ${fadeInClass} delay-300 
       ${draggingEnabled ? "draggable-component" : ""}
       ${hoveredCard === cardType ? "scale-[1.02]" : ""} 
       ${isDragging && draggedItem === cardType ? "dragging" : "opacity-100"}`}
-      style={{
-        background:
-          "linear-gradient(to bottom, rgba(244, 114, 182, 0.75), rgba(244, 114, 182, 0.2))",
-      }}
+      style={
+        {
+          // background:
+          // "linear-gradient(to bottom, rgba(244, 114, 182, 0.75), rgba(244, 114, 182, 0.2))",
+        }
+      }
       onMouseEnter={() => setHoveredCard(cardType)}
       onMouseLeave={() => setHoveredCard(null)}
       draggable={draggingEnabled}

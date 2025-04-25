@@ -110,50 +110,14 @@ const PatientsSummaryNew = ({
   return (
     <div
       style={{
-        background: "linear-gradient(to bottom, #E3B15C, #FFECD1)",
+        // background: "linear-gradient(to bottom, #E3B15C, #FFECD1)",
         borderRadius: "1.5rem",
         padding: "1.25rem",
         position: "relative",
         overflow: "hidden",
       }}
+      className="bg-yellow-400/10"
     >
-      {/* Cross decoration in background */}
-      <div
-        style={{
-          position: "absolute",
-          right: 0,
-          top: 0,
-          width: "8rem",
-          height: "8rem",
-          opacity: 0.2,
-          transform: "rotate(20deg)",
-          zIndex: 0,
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: "-2rem",
-            right: "2rem",
-            width: "3rem",
-            height: "11rem",
-            backgroundColor: "#b85011",
-            borderRadius: "0.5rem",
-          }}
-        ></div>
-        <div
-          style={{
-            position: "absolute",
-            top: "2rem",
-            right: "-1.5rem",
-            width: "11rem",
-            height: "3rem",
-            backgroundColor: "#b85011",
-            borderRadius: "0.5rem",
-          }}
-        ></div>
-      </div>
-
       <div
         style={{
           display: "flex",

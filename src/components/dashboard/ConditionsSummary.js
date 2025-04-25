@@ -28,14 +28,10 @@ const ConditionsSummary = ({
   return (
     <div
       key={`card-${cardType}`}
-      className={`rounded-2xl p-5 relative overflow-hidden transition-all duration-500 transform ${scaleInClass} ${fadeInClass} delay-400 col-span-2 
+      className={`bg-[#bdf5d720] rounded-2xl p-5 relative overflow-hidden transition-all duration-500 transform ${scaleInClass} ${fadeInClass} delay-400 col-span-2 
       ${draggingEnabled ? "draggable-component" : ""}
       ${hoveredCard === cardType ? "scale-[1.02]" : ""} 
       ${isDragging && draggedItem === cardType ? "dragging" : "opacity-100"}`}
-      style={{
-        background: "linear-gradient(to bottom, #E3B15C, #FFECD1)",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
-      }}
       onMouseEnter={() => setHoveredCard(cardType)}
       onMouseLeave={() => setHoveredCard(null)}
       draggable={draggingEnabled}
@@ -54,43 +50,6 @@ const ConditionsSummary = ({
         handleDrop(cardType);
       }}
     >
-      {/* Cross decoration in background */}
-      <div
-        style={{
-          position: "absolute",
-          right: 0,
-          top: 0,
-          width: "8rem",
-          height: "8rem",
-          opacity: 0.2,
-          transform: "rotate(20deg)",
-          zIndex: 0,
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: "-2rem",
-            right: "2rem",
-            width: "3rem",
-            height: "11rem",
-            backgroundColor: "#b85011",
-            borderRadius: "0.5rem",
-          }}
-        ></div>
-        <div
-          style={{
-            position: "absolute",
-            top: "2rem",
-            right: "-1.5rem",
-            width: "11rem",
-            height: "3rem",
-            backgroundColor: "#b85011",
-            borderRadius: "0.5rem",
-          }}
-        ></div>
-      </div>
-
       {draggingEnabled && (
         <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-5 z-10 flex items-center justify-center pointer-events-none">
           <div className="bg-white bg-opacity-80 px-3 py-1 rounded-lg text-sm font-medium">

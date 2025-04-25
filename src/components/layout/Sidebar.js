@@ -71,16 +71,7 @@ const Sidebar = ({
             className={`text-2xl font-semibold transition-opacity duration-300 ${
               sidebarCollapsed ? "opacity-0 w-0" : "opacity-100"
             }`}
-          >
-            medimind
-          </h1>
-          <div
-            className={`${
-              sidebarCollapsed ? "ml-0" : "ml-2"
-            } bg-pink-300 rounded-full w-5 h-5 flex items-center justify-center text-xs`}
-          >
-            ai
-          </div>
+          ></h1>
         </Link>
       </div>
 
